@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-6">
                 <form>
-                    <div class=" align-items-center">
+                    <div class="align-items-center">
                         <div class="col-auto my-1">
                             <label class="mr-sm-2" for="inlineFormCustomSelect">Select intesity</label>
                             <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
@@ -35,7 +35,7 @@
             </div>
             <div class="col-6">
                 <div class="row">
-                    <form class="col-6">
+                    <form class="col-4">
                         <input id="red" class="form-control" type="text" placeholder="Red 0-255" value=0>
                         <input id="green" class="form-control" type="text" placeholder="Green 0-255" value=0>
                         <input id="blue" class="form-control" type="text" placeholder="Blue 0-255" value=0>
@@ -43,13 +43,22 @@
 
                     </form>
                     <div id="box" class="col-3"> </div>
-
+                    <div class="col-auto my-1">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
                 </div>
+                
             </div>
         </div>
         <div class="row">
-            <div class="col">Column</div>
-            <div class="col">Column</div>
+            <div class="col-6">
+                <p>Color spectrum</p>
+                <input type="range" min="1000" max="12000" value="6000" step = "100" class="slider" id="myRange">
+                <span id = "f">6000</span>
+            </div>
+            <div class="col-6">Column
+
+            </div>
 
         </div>
 

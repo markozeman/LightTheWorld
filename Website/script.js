@@ -6,3 +6,12 @@ $( "input" ).focusout(function() {
     document.getElementById('box').style.background = "rgb("+r+","+g+","+b+")";
     
   });
+
+
+  var slideCol = document.getElementById("myRange");
+  var y = document.getElementById("f");
+  y.innerHTML = slideCol.value;
+  
+  slideCol.oninput = function() {
+      y.innerHTML = this.value;
+  }
