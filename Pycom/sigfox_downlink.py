@@ -19,6 +19,6 @@ while(True):
     s.send(bytes([1, 2, 3]))
 
     # await DOWNLINK message
+    time.sleep(1)
     data = s.recv(32)
     print(data)
-    time.sleep(5)
