@@ -1,0 +1,11 @@
+#box {
+    width: auto;
+    height: auto;
+    border-color: black;
+    border: solid;
+         
+}
+
+.container {
+    margin-top:200px
+}
