@@ -107,6 +107,7 @@ while(True):
     count = count + 1
     if count > 30:
         #s.send(bytes([new_intensity]))
+        #client.publish(topic="ritap/feeds/light", msg=str(new_intensity))
         print("Sigfox")
         count = 0
     print(count)
