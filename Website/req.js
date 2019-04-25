@@ -11,7 +11,6 @@ var formOutput = '<html><body>'
     + '<div><label for="Branch">Branch:</label><input type="text" id="Branch" name="Branch" value="master" /></div>'
     + '<div><input id="ListCommits" type="submit" value="List Commits" /></div></fieldset></form></body></html>';
 var serverPort = 8124;
-
 http.createServer(function (request, response) {
     if(request.method === "GET") {
         if (request.url === "/favicon.ico") {
@@ -38,7 +37,6 @@ http.createServer(function (request, response) {
                     response.end('<!doctype html><html><head><title>413</title></head><body>413: Request Entity Too Large</body></html>');
                 }
             });
-
             request.on('end', function() {
                 var formData = qs.parse(requestBody);
                 response.writeHead(200, {'Content-Type': 'text/html'});
@@ -58,7 +56,5 @@ http.createServer(function (request, response) {
         return response.end('<!doctype html><html><head><title>405</title></head><body>405: Method Not Supported</body></html>');
     }
 }).listen(serverPort);
-
+ 
 console.log('Server running at localhost:' + serverPort);
-
-
