@@ -5,4 +5,12 @@ $( "input" ).focusout(function() {
     var b = document.getElementById('blue').value;
     document.getElementById('box').style.background = "rgb("+r+","+g+","+b+")";
     
-  });
+});
+
+
+
+
+
+
+
+
