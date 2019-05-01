@@ -35,35 +35,31 @@ def values2intensity(actual_value, setpoint, previous_intensity):
 
 
 def toHEX(intensity):
-    return '0x%02x%02x%02x' % (0, intensity, 0)
+    return '0x%02x%02x%02x' % (0, 0, intensity)
     
 
 pycom.heartbeat(False)
 setpoint = 200
 previous_intensity = 0
-# init Sigfox for RCZ1 (Europe)
-sigfox = Sigfox(mode=Sigfox.SIGFOX, rcz=Sigfox.RCZ1)
-
-# create a Sigfox socket
-s = socket.socket(socket.AF_SIGFOX, socket.SOCK_RAW)
-
-# make the socket blocking
-s.setblocking(True)
-
-# configure it as uplink only
-s.setsockopt(socket.SOL_SIGFOX, socket.SO_RX, False)
-
+daylight_harvesting_on = True
 
 def sub_cb(topic, msg):
     if ubinascii.hexlify(topic) == ubinascii.hexlify(topic_sub[0]):
         print(msg.decode('utf-8'))
         new_msg = msg.decode('utf-8')
-        pycom.rgbled(int(new_msg))  
+        global daylight_harvesting_on
+        daylight_harvesting_on = False
+        pycom.rgbled(int(new_msg))
 
     if ubinascii.hexlify(topic) == ubinascii.hexlify(topic_sub[1]):
         global setpoint 
         print(msg.decode('utf-8'))
         setpoint = int(msg.decode('utf-8'))
+    
+    if ubinascii.hexlify(topic) == ubinascii.hexlify(topic_sub[2]):
+        global daylight_harvesting_on
+        print(msg.decode('utf-8'))
+        daylight_harvesting_on = bool(msg.decode('utf-8'))
 
 wlan = WLAN(mode=WLAN.STA)
 
@@ -71,7 +67,6 @@ nets = wlan.scan()
 for net in nets:
     if net.ssid == 'AndroidAP':
         print('Network found!')
-        #wlan.connect(net.ssid, auth=(WLAN.WPA2, 'frac5380'), timeout=5000)
         wlan.connect(net.ssid, auth=(net.sec, 'frac5380'), timeout=5000)
         while not wlan.isconnected():
             machine.idle() # save power while waiting
@@ -83,14 +78,13 @@ client = MQTTClient(machine_id, "io.adafruit.com",user="ritap", password="557fec
 
 client.set_callback(sub_cb)
 client.connect()
-topic_sub=["ritap/feeds/user", "ritap/feeds/setpoint"]
+topic_sub=["ritap/feeds/rgb_website", "ritap/feeds/setpoint", "ritap/feeds/harvesting_bool"]
 topic_length=len(topic_sub)
 
 for i in range(0, topic_length):
     client.subscribe(topic=topic_sub[i])
 
 
-count = 0
 while(True):
     light_sensor = ltr.LTR329ALS01().light() 
     channel_0, channel_1 = light_sensor
@@ -98,18 +92,16 @@ while(True):
     avg = (channel_0 + channel_1) / 2
 
     new_intensity = values2intensity(avg, setpoint, previous_intensity)
-    new_val = toHEX(new_intensity)
-    print()
-
-    pycom.rgbled(int(new_val, 0))  
-    previous_intensity = new_intensity 
-    # send some bytes
-    count = count + 1
-    if count > 30:
-        #s.send(bytes([new_intensity]))
-        print("Sigfox")
-        count = 0
-    print(count)
     client.check_msg()
-    time.sleep(1)
+
+    new_val = toHEX(new_intensity)
+
+    if daylight_harvesting_on:
+        pycom.rgbled(int(new_val, 0))  
+        previous_intensity = new_intensity 
+    
+    client.publish(topic="ritap/feeds/rgb_pycom", msg=str(new_intensity))
+    time.sleep(3)
+
+
 
