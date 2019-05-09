@@ -69,9 +69,9 @@ wlan = WLAN(mode=WLAN.STA)
 
 nets = wlan.scan()
 for net in nets:
-    if net.ssid == 'AndroidAP':
+    if net.ssid == 'Awesome HUAWEI':
         print('Network found!')
-        wlan.connect(net.ssid, auth=(net.sec, 'frac5380'), timeout=5000)
+        wlan.connect(net.ssid, auth=(net.sec, 'z-manprint'), timeout=5000)
         while not wlan.isconnected():
             machine.idle() # save power while waiting
         print('WLAN connection succeeded!')
